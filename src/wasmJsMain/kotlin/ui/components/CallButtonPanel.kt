@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import domain.dispatchCall
 import model.BuildingState
 import model.Direction
@@ -17,49 +18,55 @@ import model.DoorState
 @Composable
 fun CentralCallButtonPanel(
     buildingState: BuildingState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    scaleFactor: Float = 1f
 ) {
+    val callButtonSize = (30 * scaleFactor).dp
+    val floorNumberFontSize = (14 * scaleFactor).sp
+
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Match ElevatorShaft header: titleLarge text + 8dp spacer
         Text(
             text = "CALL",
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold
         )
-        Text(
-            text = "BUTTONS",
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.Bold
-        )
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Inner BoxWithConstraints matches elevator shaft's 85% height
+        // Use same 85% height as ElevatorShaft canvas for floor area alignment
         BoxWithConstraints(
-            modifier = Modifier.fillMaxHeight(0.85f)
+            modifier = Modifier.fillMaxHeight(0.85f).fillMaxWidth()
         ) {
             val totalFloors = 6
             val floorHeight = maxHeight / totalFloors
 
+            // Account for the 4dp floorGap at top of each floor in ElevatorShaft
+            // The visual center of each floor is shifted down by half the gap
+            val floorGapOffset = 2.dp
+
             for (floor in 1..totalFloors) {
-                // Calculate from bottom - same as elevator shaft
-                // Subtract 28.dp to compensate for taller header (extra "BUTTONS" line)
-                // Add 2.dp to account for the floorGap in elevator shaft (4.dp gap at top of each floor)
-                val floorCenterY = maxHeight - (floorHeight * floor) + (floorHeight / 2) - 26.dp
+                // Calculate floor center from bottom - same coordinate system as elevator shaft
+                // Floor 1 is at bottom, floor 6 is at top
+                val floorTop = maxHeight - (floorHeight * floor)
+                val floorCenterY = floorTop + (floorHeight / 2) + floorGapOffset
+
+                // Button group height estimate for centering
+                val buttonGroupHeight = callButtonSize + floorNumberFontSize.value.dp
 
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .offset(y = floorCenterY - 24.dp),
+                        .offset(y = floorCenterY - buttonGroupHeight / 2),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     // Floor number centered above the arrows
                     Text(
                         text = floor.toString(),
-                        style = MaterialTheme.typography.bodyMedium,
+                        fontSize = floorNumberFontSize,
                         color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Bold
                     )
@@ -88,10 +95,11 @@ fun CentralCallButtonPanel(
                                         val assignedElevator = dispatchCall(floor, Direction.UP, buildingState)
                                         assignedElevator.assignedCallsUp += floor
                                     }
-                                }
+                                },
+                                buttonSize = callButtonSize
                             )
                         } else {
-                            Spacer(modifier = Modifier.size(30.dp))
+                            Spacer(modifier = Modifier.size(callButtonSize))
                         }
 
                         // Down button (floors 2-6 only)
@@ -113,10 +121,11 @@ fun CentralCallButtonPanel(
                                         val assignedElevator = dispatchCall(floor, Direction.DOWN, buildingState)
                                         assignedElevator.assignedCallsDown += floor
                                     }
-                                }
+                                },
+                                buttonSize = callButtonSize
                             )
                         } else {
-                            Spacer(modifier = Modifier.size(30.dp))
+                            Spacer(modifier = Modifier.size(callButtonSize))
                         }
                     }
                 }

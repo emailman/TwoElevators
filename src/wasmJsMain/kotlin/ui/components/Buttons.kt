@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -22,7 +23,8 @@ import androidx.compose.ui.unit.sp
 fun FloorButton(
     floor: Int,
     isLit: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    buttonSize: Dp = 52.dp
 ) {
     val buttonColor = if (isLit) {
         Color(0xFFFFB300)
@@ -36,9 +38,11 @@ fun FloorButton(
         MaterialTheme.colorScheme.onSurface
     }
 
+    val fontSize = (buttonSize.value * 0.38f).sp
+
     Button(
         onClick = onClick,
-        modifier = Modifier.requiredSize(52.dp),
+        modifier = Modifier.requiredSize(buttonSize),
         shape = CircleShape,
         colors = ButtonDefaults.buttonColors(
             containerColor = buttonColor
@@ -50,7 +54,7 @@ fun FloorButton(
     ) {
         Text(
             text = floor.toString(),
-            fontSize = 20.sp,
+            fontSize = fontSize,
             fontWeight = FontWeight.Bold,
             color = textColor
         )
@@ -61,7 +65,8 @@ fun FloorButton(
 fun CallButton(
     isUp: Boolean,
     isLit: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    buttonSize: Dp = 30.dp
 ) {
     val buttonColor = if (isLit) {
         Color(0xFFFFB300)
@@ -75,10 +80,12 @@ fun CallButton(
         MaterialTheme.colorScheme.onSurface
     }
 
+    val arrowSize = (buttonSize.value * 0.47f).dp
+
     Button(
         onClick = onClick,
         modifier = Modifier
-            .size(30.dp)
+            .size(buttonSize)
             .clip(CircleShape),
         shape = CircleShape,
         colors = ButtonDefaults.buttonColors(
@@ -89,7 +96,7 @@ fun CallButton(
         ),
         contentPadding = PaddingValues(0.dp)
     ) {
-        Canvas(modifier = Modifier.size(14.dp)) {
+        Canvas(modifier = Modifier.size(arrowSize)) {
             val arrowPath = Path().apply {
                 if (isUp) {
                     moveTo(size.width / 2, 0f)

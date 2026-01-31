@@ -29,80 +29,94 @@ fun App() {
     MaterialTheme(
         colorScheme = darkColorScheme()
     ) {
-        Column(
+        BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .background(MaterialTheme.colorScheme.background)
         ) {
-            // Header
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "Elevator Simulator",
-                style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "by Claude and Eric - Version 4.0",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+            // Calculate scale factor based on screen width
+            val scaleFactor = when {
+                maxWidth >= 600.dp -> 1f
+                maxWidth >= 400.dp -> 0.75f
+                else -> 0.6f
+            }
 
-            Row(
+            Column(
                 modifier = Modifier.fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // CAB A buttons (left side)
-                ElevatorButtonPanel(
-                    label = "CAB A",
-                    litButtons = buildingState.elevatorA.queuedFloors,
-                    onButtonPress = { floor -> handleCabButtonPress(buildingState.elevatorA, floor) },
-                    modifier = Modifier
-                        .weight(0.8f)
-                        .fillMaxHeight()
+                // Header
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Elevator Simulator",
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontWeight = FontWeight.Bold
                 )
+                Text(
+                    text = "by Claude and Eric - Version 4.0",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
 
-                // Elevator A shaft
-                ElevatorShaft(
-                    elevatorState = buildingState.elevatorA,
-                    label = "A",
-                    modifier = Modifier
-                        .weight(1.2f)
-                        .fillMaxHeight()
-                        .padding(top = 16.dp, bottom = 16.dp)
-                )
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    // CAB A buttons (left side)
+                    ElevatorButtonPanel(
+                        label = "CAB A",
+                        litButtons = buildingState.elevatorA.queuedFloors,
+                        onButtonPress = { floor -> handleCabButtonPress(buildingState.elevatorA, floor) },
+                        modifier = Modifier
+                            .weight(0.8f)
+                            .fillMaxHeight(),
+                        scaleFactor = scaleFactor
+                    )
 
-                // Central call buttons (shared, centered between elevators)
-                CentralCallButtonPanel(
-                    buildingState = buildingState,
-                    modifier = Modifier
-                        .weight(0.8f)
-                        .fillMaxHeight()
-                        .padding(vertical = 16.dp)
-                )
+                    // Elevator A shaft
+                    ElevatorShaft(
+                        elevatorState = buildingState.elevatorA,
+                        label = "A",
+                        modifier = Modifier
+                            .weight(1.2f)
+                            .fillMaxHeight()
+                            .padding(top = 16.dp, bottom = 16.dp)
+                    )
 
-                // Elevator B shaft
-                ElevatorShaft(
-                    elevatorState = buildingState.elevatorB,
-                    label = "B",
-                    modifier = Modifier
-                        .weight(1.2f)
-                        .fillMaxHeight()
-                        .padding(top = 16.dp, bottom = 16.dp)
-                )
+                    // Central call buttons (shared, centered between elevators)
+                    CentralCallButtonPanel(
+                        buildingState = buildingState,
+                        modifier = Modifier
+                            .weight(0.8f)
+                            .fillMaxHeight()
+                            .padding(vertical = 16.dp),
+                        scaleFactor = scaleFactor
+                    )
 
-                // CAB B buttons (right side)
-                ElevatorButtonPanel(
-                    label = "CAB B",
-                    litButtons = buildingState.elevatorB.queuedFloors,
-                    onButtonPress = { floor -> handleCabButtonPress(buildingState.elevatorB, floor) },
-                    modifier = Modifier
-                        .weight(0.8f)
-                        .fillMaxHeight()
-                )
+                    // Elevator B shaft
+                    ElevatorShaft(
+                        elevatorState = buildingState.elevatorB,
+                        label = "B",
+                        modifier = Modifier
+                            .weight(1.2f)
+                            .fillMaxHeight()
+                            .padding(top = 16.dp, bottom = 16.dp)
+                    )
+
+                    // CAB B buttons (right side)
+                    ElevatorButtonPanel(
+                        label = "CAB B",
+                        litButtons = buildingState.elevatorB.queuedFloors,
+                        onButtonPress = { floor -> handleCabButtonPress(buildingState.elevatorB, floor) },
+                        modifier = Modifier
+                            .weight(0.8f)
+                            .fillMaxHeight(),
+                        scaleFactor = scaleFactor
+                    )
+                }
             }
         }
     }

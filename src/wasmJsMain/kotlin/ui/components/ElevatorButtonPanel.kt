@@ -15,8 +15,12 @@ fun ElevatorButtonPanel(
     label: String,
     litButtons: Set<Int>,
     onButtonPress: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    scaleFactor: Float = 1f
 ) {
+    val buttonSize = (52 * scaleFactor).dp
+    val panelPadding = (12 * scaleFactor).dp
+    val buttonSpacing = (6 * scaleFactor).dp
     Column(
         modifier = modifier.padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -39,16 +43,17 @@ fun ElevatorButtonPanel(
             tonalElevation = 4.dp
         ) {
             Column(
-                modifier = Modifier.padding(12.dp),
+                modifier = Modifier.padding(panelPadding),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(6.dp)
+                verticalArrangement = Arrangement.spacedBy(buttonSpacing)
             ) {
                 // Floor buttons 6 down to 1 (top to bottom)
                 for (floor in 6 downTo 1) {
                     FloorButton(
                         floor = floor,
                         isLit = floor in litButtons,
-                        onClick = { onButtonPress(floor) }
+                        onClick = { onButtonPress(floor) },
+                        buttonSize = buttonSize
                     )
                 }
             }
