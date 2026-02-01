@@ -1,6 +1,6 @@
 # Two Elevators
 
-### by Claude and Eric - Version 4.0
+### by Claude and Eric - Version 4.1
 
 A visual two-elevator simulation built with Kotlin/WASM and Compose Multiplatform. The application renders two interactive elevator shafts with animated car movement, doors, intelligent dispatching, and control panels.
 
