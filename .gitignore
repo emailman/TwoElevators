@@ -1,11 +1,12 @@
 # Gradle
 .gradle/
-build/
+build/*
 !build/dist/
+build/dist/*
 !build/dist/wasmJs/
+build/dist/wasmJs/*
 !build/dist/wasmJs/productionExecutable/
-!build/dist/wasmJs/productionExecutable/**
-dist/
+/dist/
 !gradle/wrapper/gradle-wrapper.jar
 
 # Kotlin
