@@ -42,7 +42,20 @@ fun CentralCallButtonPanel(
             modifier = Modifier.fillMaxHeight(0.85f).fillMaxWidth()
         ) {
             val totalFloors = 6
-            val floorHeight = maxHeight / totalFloors
+
+            // Calculate effective floor area height to match elevator shaft's aspect ratio constraint
+            // Shaft column has weight 1.2, call panel has weight 0.8, so shaft width ≈ our width * 1.5
+            // Shaft canvas uses aspectRatio(0.3), meaning height = width / 0.3
+            val estimatedShaftWidth = maxWidth * 1.5f
+            val shaftHeightFromAspect = estimatedShaftWidth / 0.3f
+            // Effective height is the lesser of our 85% height and the shaft's aspect-derived height
+            val effectiveFloorAreaHeight = minOf(maxHeight, shaftHeightFromAspect)
+
+            // When aspect ratio constrains the shaft to be shorter than 85%, the Canvas is centered
+            // within its allocated space. Add offset to match this centering behavior.
+            val verticalOffset = (maxHeight - effectiveFloorAreaHeight) / 2
+
+            val floorHeight = effectiveFloorAreaHeight / totalFloors
 
             // Account for the 4dp floorGap at top of each floor in ElevatorShaft
             // The visual center of each floor is shifted down by half the gap
@@ -51,7 +64,7 @@ fun CentralCallButtonPanel(
             for (floor in 1..totalFloors) {
                 // Calculate floor center from bottom - same coordinate system as elevator shaft
                 // Floor 1 is at bottom, floor 6 is at top
-                val floorTop = maxHeight - (floorHeight * floor)
+                val floorTop = effectiveFloorAreaHeight - (floorHeight * floor)
                 val floorCenterY = floorTop + (floorHeight / 2) + floorGapOffset
 
                 // Button group height estimate for centering
@@ -60,7 +73,7 @@ fun CentralCallButtonPanel(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .offset(y = floorCenterY - buttonGroupHeight / 2),
+                        .offset(y = verticalOffset + floorCenterY - buttonGroupHeight / 2),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     // Floor number centered above the arrows
