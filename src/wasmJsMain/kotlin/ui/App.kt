@@ -54,7 +54,7 @@ fun App() {
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "by Claude and Eric - Version 4.0",
+                    text = "by Claude and Eric - Version 4.1",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
                 )
