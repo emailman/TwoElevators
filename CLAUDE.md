@@ -13,20 +13,19 @@ A dual elevator simulation built with Kotlin/Compose for WebAssembly (WASM). The
 ```
 src/wasmJsMain/kotlin/
 ├── Main.kt                      # Entry point
-├── model/                       # Data models
-│   ├── Direction.kt
-│   ├── DoorState.kt
-│   ├── ElevatorState.kt
-│   └── BuildingState.kt
-├── domain/                      # Business logic
-│   └── ElevatorLogic.kt
-├── viewmodel/                   # State management
-│   └── ElevatorController.kt
-└── ui/                          # UI layer
+├── model/
+│   └── Models.kt                # Direction, DoorState, ElevatorState, BuildingState
+├── domain/
+│   ├── ElevatorAlgorithm.kt     # SCAN algorithm (getNextFloor)
+│   ├── ElevatorDispatcher.kt    # ETA calculation and call dispatching
+│   └── ElevatorService.kt       # Floor request handling
+├── viewmodel/
+│   └── ElevatorViewModel.kt     # State management and animations
+└── ui/
     ├── App.kt                   # Root composable with responsive layout
     └── components/
         ├── Buttons.kt           # FloorButton, CallButton (with size params)
-        ├── CallButtonPanel.kt   # Hall call buttons (with scaleFactor)
+        ├── CallButtonPanel.kt   # Hall call buttons (with scaleFactor, mobile alignment)
         ├── ElevatorButtonPanel.kt # Cab buttons (with scaleFactor)
         └── ElevatorShaft.kt     # Canvas-based elevator visualization
 ```
@@ -70,7 +69,7 @@ src/wasmJsMain/kotlin/
 - 4-second idle timeout before returning home
 - Smart dispatching based on ETA calculation
 
-## Responsive Layout (In Progress)
+## Responsive Layout
 
 ### Current Implementation
 - `BoxWithConstraints` in App.kt detects screen width
@@ -80,10 +79,20 @@ src/wasmJsMain/kotlin/
   - < 400dp: 0.6
 - Button sizes scale via `buttonSize` parameter in FloorButton/CallButton
 - Panel padding and spacing scale in ElevatorButtonPanel
-- Call button panel aligned with elevator floors via matching headers
+- Call button panel aligned with elevator floors via aspect ratio matching
 
-### Future Mobile Work
-- Test and refine scaling on actual mobile devices
+### Mobile Alignment (Completed)
+- CallButtonPanel calculates `effectiveFloorAreaHeight` to match ElevatorShaft's aspect ratio constraint
+- Uses weight ratio (1.2/0.8 = 1.5) to estimate shaft width from call panel width
+- Applies `verticalOffset` to center buttons when aspect ratio limits shaft height
+- Works correctly on both desktop (no offset) and mobile (centered alignment)
+
+### Potential Future Work
 - Consider alternative layouts for very narrow screens (stacked vs side-by-side)
 - May need to hide cab button panels on mobile or use overlay/modal
 - Test touch target sizes meet accessibility guidelines (48dp minimum)
+
+## Current Status
+**Last Updated: 2026-02-01**
+
+The project is fully functional with working responsive layout on both desktop and mobile devices. The call button panel properly aligns with elevator shaft floors across all screen sizes.
